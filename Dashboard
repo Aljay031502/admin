@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark-Themed Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f2c54;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      background-color: #1a2b45;
+      width: 250px;
+      padding: 20px;
+    }
+
+    .sidebar h1 {
+      color: #0df120;
+    }
+
+    .sidebar a, .sidebar button {
+      color: #eee;
+      background-color: transparent;
+      text-decoration: none;
+      display: block;
+      margin: 10px 0;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+    }
+
+    .sidebar button:hover {
+      background-color: #0df120;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-bar {
+      background-color: #0f2c54;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-bar h1 {
+      margin: 0;
+    }
+
+    .calendar-emoji {
+      font-size: 50px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 28px;
+    }
+
+    .tabs button {
+      background-color: transparent;
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      border-bottom: 2px solid #0df120;
+    }
+
+    .section {
+      background-color: #122b47;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section h3 {
+      margin: 0 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .box {
+      background-color: #1f354e;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .chart {
+      background-color: #eaeef5;
+      height: 200px;
+      border-radius: 10px;
+    }
+    .calendar-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Style the calendar emoji */
+    .calendar-emoji {
+      font-size: 50px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .calendar-emoji:hover {
+      transform: scale(1.2); /* Scale the emoji on hover */
+    }
+
+    /* Calendar popup hidden by default */
+    .calendar-popup {
+      display: none;
+      position: absolute;
+      top: 70px;
+      background-color: white;
+      color: black;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    .calendar-popup.active {
+      display: block; /* Show when active */
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .calendar-header p {
+      margin: 0;
+    }
+
+    .calendar-header .icons span {
+      cursor: pointer;
+    } 
+    /* Calendar Styles */
+.wrapper{
+  width: 450px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+.wrapper header{
+  display: flex;
+  align-items: center;
+  padding: 25px 30px 10px;
+  justify-content: space-between;
+}
+header .icons{
+  display: flex;
+}
+header .icons span{
+  height: 38px;
+  width: 38px;
+  margin: 0 1px;
+  cursor: pointer;
+  color: #878787;
+  text-align: center;
+  line-height: 38px;
+  font-size: 1.9rem;
+  user-select: none;
+  border-radius: 50%;
+}
+.icons span:last-child{
+  margin-right: -10px;
+}
+header .icons span:hover{
+  background: #f2f2f2;
+}
+header .current-date{
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+.calendar{
+  padding: 20px;
+}
+.calendar ul{
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  text-align: center;
+}
+.calendar .days{
+  margin-bottom: 20px;
+}
+.calendar li{
+  color: #333;
+  width: calc(100% / 7);
+  font-size: 1.07rem;
+}
+.weeks, .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+}
+.calendar .weeks li{
+  font-weight: 500;
+  cursor: default;
+}
+.calendar .days li{
+  z-index: 1;
+  cursor: pointer;
+  position: relative;
+  margin-top: 30px;
+}
+.days li.inactive{
+  color: #aaa;
+}
+.days li.active{
+  color: #fff;
+}
+.days li::before{
+  position: absolute;
+  content: "";
+  left: 50%;
+  top: 50%;
+  height: 40px;
+  width: 40px;
+  z-index: -1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.days li.active::before{
+  background: #5972b6;
+}
+.days li:not(.active):hover::before{
+  background: #f2f2f2;
+}
+    .material-symbols-rounded {
+      font-family: 'Material Symbols Rounded', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>MALTech</h1>
+      <button>Overview</button>
+      <button>Data Analysis</button>
+      <button>Add Schedule</button>
+      <button>History</button>
+      <button>Log Out</button>
+    </div>
+    <div class="content">
+      <div class="menu-bar">
+        <h1>Automatic Watering System Dashboard</h1>
+      <div class="calendar-container">
+        <!-- The emoji that triggers the calendar -->
+        <span class="calendar-emoji">📅</span>
+      </div>
+      <div class="dashboard-header">
+        <!-- Insert the calendar code here  -->
+        <head>
+          <meta charset="utf-8">
+          <title>Calendar JavaScript | CodingNepal</title>
+          <link rel="stylesheet" href="style.css">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <!-- Google Font Link for Icons -->
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+          <script src="script.js" defer></script>
+        </head>
+        <body>
+            <div class="wrapper">
+                <div class="calendar-popup">
+                    <div class="calendar-header">
+                      <header>
+                       <p class="current-date">September 2024</p>
+                       <div class="icons">
+                      <span id="prev" class="material-symbols-rounded">chevron_left</span>
+                    <span id="next" class="material-symbols-rounded">chevron_right</span>
+                  </header>
+                </div>
+            <div class="calendar">
+              <ul class="weeks">
+                <li>Sun</li>
+                <li>Mon</li>
+                <li>Tue</li>
+                <li>Wed</li>
+                <li>Thu</li>
+                <li>Fri</li>
+                <li>Sat</li>
+              </ul>
+              <ul class="days">
+                  <li>1</li>
+                  <li>2</li>
+                  <li>3</li>
+                  <li>4</li>
+                  <li>5</li>
+                  <li>6</li>
+                  <li>7</li>
+                  <li>8</li>
+                  <li>9</li>
+                  <li>10</li>
+                  <li>11</li>
+                  <li>12</li>
+                  <li>13</li>
+                  <li>14</li>
+                  <li>15</li>
+                  <li>16</li>
+                  <li>17</li>
+                  <li>18</li>
+                  <li>19</li>
+                  <li>20</li>
+                  <li>21</li>
+                  <li>22</li>
+                  <li>23</li>
+                  <li>24</li>
+                  <li class="active">25</li>
+                  <li>26</li>
+                  <li>27</li>
+                  <li>28</li>
+                  <li>29</li>
+                  <li>30</li>
+                  <li class="inactive">1</li>
+                  <li class="inactive">2</li>
+                  <li class="inactive">3</li>
+                  <li class="inactive">4</li>
+                  <li class="inactive">5</li>
+              </ul>
+            </div>
+          </div>
+        
+          <script>
+            // Get the calendar emoji and calendar popup elements
+            const calendarEmoji = document.querySelector('.calendar-emoji');
+            const calendarPopup = document.querySelector('.calendar-popup');
+        
+            // Toggle the calendar popup when emoji is clicked
+            calendarEmoji.addEventListener('click', () => {
+              calendarPopup.classList.toggle('active');
+            });
+          </script>
+        </body>
+        </html>
+        
